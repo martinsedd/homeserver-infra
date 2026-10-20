@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   fileSystems."/mnt/backup" = {
     device = "/dev/disk/by-uuid/eef33075-3a0f-4945-a46c-4754e4577833";
@@ -17,7 +17,7 @@
 
   systemd.services.restic-backup = {
     description = "restic backup to external drive";
-    after = [ "k3s.service" ];
+    after = [ "k3s.service" "sops-install-secrets.service" ];
     serviceConfig = {
       Type = "oneshot";
       User = "root";
@@ -25,7 +25,7 @@
       ExecStart = pkgs.writeShellScript "restic-backup" ''
         set -eu 
         export RESTIC_REPOSITORY=/mnt/backup/restic 
-        export RESTIC_PASSWORD_FILE=/var/lib/restic/password 
+        export RESTIC_PASSWORD_FILE=${config.sops.secrets.restic-password.path} 
 
         ${pkgs.sqlite}/bin/sqlite3 /var/lib/rancher/k3s/server/db/state.db \
           ".backup '/var/lib/restic/k3s-state.db'"
@@ -51,7 +51,7 @@
     timerConfig = {
       OnCalendar = "03:30";
       Persistent = true;
-      RandomizeDelaySec = "10m";
+      RandomizedDelaySec = "10m";
     };
   };
 }

@@ -7,21 +7,19 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      disko,
-      ...
-    }:
-    {
-      nixosConfigurations.homeserver = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [ ./hosts/homeserver/default.nix ];
-      };
-
-      diskoConfigurations.homeserver = ./hosts/homeserver/disk.nix;
+  outputs = inputs@{ self, nixpkgs, disko, sops-nix, ... }: {
+    nixosConfigurations.homeserver = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      specialArgs = { inherit inputs; };
+      modules = [ ./hosts/homeserver/default.nix ];
     };
+
+    diskoConfigurations.homeserver = ./hosts/homeserver/disk.nix;
+  };
 }

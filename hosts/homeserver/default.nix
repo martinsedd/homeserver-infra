@@ -6,6 +6,7 @@
     ./nvidia.nix
     ./k3s.nix
     ./backup.nix
+    ./ollama.nix
   ];
 
   nixpkgs.config.allowUnfree = true;

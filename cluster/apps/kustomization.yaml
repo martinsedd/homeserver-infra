@@ -6,3 +6,4 @@ resources:
   - monitoring.yaml
   - loki.yaml
   - alloy.yaml
+  - monitoring-secrets.yaml

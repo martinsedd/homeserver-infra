@@ -1,14 +1,25 @@
-{ ... }:
+{ inputs, ... }:
 {
   imports = [
+    inputs.sops-nix.nixosModules.sops
     ./hardware.nix
     ./base.nix
     ./nvidia.nix
     ./k3s.nix
     ./backup.nix
+    ./ollama.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
+
+  sops = {
+    defaultSopsFile = ../../secrets/homeserver.yaml;
+    age.keyFile = "/var/lib/sops-nix/key.txt";
+    secrets.restic-password = {
+      owner = "root";
+      mode = "0400";
+    };
+  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;

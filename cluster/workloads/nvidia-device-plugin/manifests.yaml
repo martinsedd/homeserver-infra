@@ -36,7 +36,6 @@ spec:
               value: /run/opengl-driver/lib
           securityContext:
             privileged: true
-            allowPrivilegeEscalation: false
             capabilities:
               drop: ["ALL"]
           volumeMounts:

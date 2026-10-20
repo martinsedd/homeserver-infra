@@ -10,7 +10,7 @@ metadata:
   namespace: cloudflared
 data:
   config.yaml: |
-    tunnel: REPLACE_TUNNEL_UUID
+    tunnel: 4e5d2081-08ee-442f-9fa8-694f7c36d84f
     credentials-file: /etc/cloudflared/creds/credentials.json
     ingress:
       - hostname: "*.apps.lampilabs.com"
@@ -36,7 +36,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:2026.10.1
+          image: cloudflare/cloudflared:2026.10.2
           args:
             - tunnel
             - --no-autoupdate

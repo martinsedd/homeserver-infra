@@ -16,7 +16,7 @@
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/f3d4da55-f56e-48ea-b2b0-755e37c94b57";
       fsType = "btrfs";
-      options = [ "subvol=@" "compres=zstd:3" "noatime" "space_cahe=v2" ];
+      options = [ "subvol=@" "compress=zstd:3" "noatime" "space_cache=v2" ];
     };
 
   fileSystems."/boot" =
@@ -28,19 +28,19 @@
   fileSystems."/nix" =
     { device = "/dev/disk/by-uuid/f3d4da55-f56e-48ea-b2b0-755e37c94b57";
       fsType = "btrfs";
-      options = [ "subvol=@nix" "compres=zstd:3" "noatime" "space_cahe=v2"];
+      options = [ "subvol=@nix" "compress=zstd:3" "noatime" "space_cache=v2"];
     };
 
   fileSystems."/home" =
     { device = "/dev/disk/by-uuid/f3d4da55-f56e-48ea-b2b0-755e37c94b57";
       fsType = "btrfs";
-      options = [ "subvol=@home" "compres=zstd:3" "noatime" "space_cahe=v2"];
+      options = [ "subvol=@home" "compress=zstd:3" "noatime" "space_cache=v2"];
     };
 
   fileSystems."/var" =
     { device = "/dev/disk/by-uuid/f3d4da55-f56e-48ea-b2b0-755e37c94b57";
       fsType = "btrfs";
-      options = [ "subvol=@var" "compres=zstd:3" "noatime" "space_cahe=v2"];
+      options = [ "subvol=@var" "compress=zstd:3" "noatime" "space_cache=v2"];
     };
 
   fileSystems."/var/lib/rancher/k3s" =

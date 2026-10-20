@@ -13,7 +13,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostname = "homeserver";
+  networking.hostName = "homeserver";
   networking.useDHCP = true;
 
   users.users.martinsedd = {

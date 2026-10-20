@@ -5,9 +5,9 @@ let
 
   [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
     runtime_type = "io.containerd.runc.v2"
-    priviledged_without_host_devices = false
+    privileged_without_host_devices = false
   [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
-    BinaryName = "${pkgs.nvidia-container-toolkit.tools}/bin/bash/nvidia-container-runtime"
+    BinaryName = "${pkgs.nvidia-container-toolkit.tools}/bin/nvidia-container-runtime"
   '';
 
   preStart = pkgs.writeShellScript "k3s-pre-start" ''
@@ -51,7 +51,7 @@ in
       LimitNOFILE = 1048576;
       LimitNPROC = "infinity";
       LimitCORE = "infinity";
-      TasksMask = "infinity";
+      TasksMax = "infinity";
       ExecStartPre = preStart;
       ExecStart = "${pkgs.k3s}/bin/k3s server --config /etc/rancher/k3s/config.yaml";
     };

@@ -13,6 +13,11 @@ spec:
       releaseName: kube-prometheus-stack
       values: |
         grafana:
+          additionalDataSources:
+            - name: Loki
+              type: loki
+              url: http://loki.monitoring.svc.cluster.local:3100
+              access: proxy
           persistence:
             enabled: true
             storageClassName: local-path

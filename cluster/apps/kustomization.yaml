@@ -4,3 +4,5 @@ resources:
   - ollama.yaml
   - cloudflared.yaml
   - monitoring.yaml
+  - loki.yaml
+  - alloy.yaml

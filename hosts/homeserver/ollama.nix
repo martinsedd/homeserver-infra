@@ -1,5 +1,8 @@
 { pkgs, ... }:
 {
+  nixpkgs.config.cudaSupport = true;
+  nixpkgs.config.cudaCapabilities = [ "6.1" ];
+
   services.ollama = {
     enable = true;
     package = pkgs.ollama-cuda;

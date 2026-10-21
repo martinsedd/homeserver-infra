@@ -41,6 +41,7 @@ spec:
                       storage: 20Gi
         alertmanager:
           alertmanagerSpec:
+            configSecret: alertmanager-config
             storage:
               volumeClaimTemplate:
                 spec:

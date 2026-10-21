@@ -8,6 +8,7 @@
     ./k3s.nix
     ./backup.nix
     ./ollama.nix
+    ./vm.nix
   ];
 
   nixpkgs.config.allowUnfree = true;

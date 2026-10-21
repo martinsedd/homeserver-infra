@@ -1,0 +1,55 @@
+<domain type='kvm'>
+  <name>win11</name>
+  <memory unit='GiB'>8</memory>
+  <vcpu placement='static'>4</vcpu>
+  <os>
+    <type arch='x86_64' machine='q35'>hvm</type>
+    <loader readonly='yes' secure='yes' type='pflash'>/run/libvirt/nix-ovmf/edk2-x86_64-secure-code.fd</loader>
+    <nvram template='/run/libvirt/nix-ovmf/edk2-i386-vars.fd'>/var/lib/libvirt/qemu/nvram/win11_VARS.fd</nvram>
+    <boot dev='cdrom'/>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <smm state='on'/>
+  </features>
+  <cpu mode='host-passthrough' check='none'/>
+  <clock offset='localtime'>
+    <timer name='rtc' tickpolicy='catchup'/>
+    <timer name='pit' tickpolicy='delay'/>
+    <timer name='hpet' present='no'/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <devices>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/var/lib/libvirt/images/win11.qcow2'/>
+      <target dev='sda' bus='sata'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/var/lib/libvirt/images/Win11_25H2.iso'/>
+      <target dev='sdb' bus='sata'/>
+      <readonly/>
+    </disk>
+    <controller type='sata' index='0'/>
+    <interface type='network'>
+      <source network='default'/>
+      <model type='e1000e'/>
+    </interface>
+    <graphics type='spice' listen='127.0.0.1' autoport='yes'/>
+    <video>
+      <model type='qxl'/>
+    </video>
+    <tpm model='tpm-crb'>
+      <backend type='emulator' version='2.0'/>
+    </tpm>
+    <channel type='spicevmc'>
+      <target type='virtio' name='com.redhat.spice.0'/>
+    </channel>
+    <input type='tablet' bus='usb'/>
+  </devices>
+</domain>

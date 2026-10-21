@@ -12,6 +12,12 @@ spec:
     helm:
       releaseName: kube-prometheus-stack
       values: |
+        kubeScheduler:
+          enabled: false
+        kubeProxy:
+          enabled: false
+        kubeControllerManager:
+          enabled: false
         grafana:
           admin:
             existingSecret: grafana-admin

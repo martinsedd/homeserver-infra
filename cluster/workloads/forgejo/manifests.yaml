@@ -32,6 +32,10 @@ spec:
       labels:
         app: forgejo
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       initContainers:
         - name: chown-data
           image: busybox:1.37

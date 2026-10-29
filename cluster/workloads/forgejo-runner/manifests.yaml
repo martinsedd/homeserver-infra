@@ -65,7 +65,7 @@ spec:
     spec:
       initContainers:
         - name: register
-          image: code.forgejo.org/forgejo/runner:v13.2.0
+          image: code.forgejo.org/forgejo/runner:13.2.0
           command: ["sh", "-c"]
           args:
             - |
@@ -89,7 +89,7 @@ spec:
               mountPath: /data
       containers:
         - name: runner
-          image: code.forgejo.org/forgejo/runner:v13.2.0
+          image: code.forgejo.org/forgejo/runner:13.2.0
           command: ["forgejo-runner", "daemon", "--config", "/etc/runner/config.yml"]
           volumeMounts:
             - name: data

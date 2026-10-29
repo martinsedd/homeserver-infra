@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: forgejo-runner-config
+  namespace: forgejo
+data:
+  config.yml: |
+    log:
+      level: info
+    runner:
+      file: /data/.runner
+      capacity: 1
+      timeout: 3h
+      labels:
+        - docker
+    cache:
+      enabled: true
+      dir: /data/cache
+    container:
+      network: host
+      privileged: false
+      docker_host: tcp://localhost:2375
+      force_pull: false
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: forgejo-runner-data
+  namespace: forgejo
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: forgejo-runner-docker
+  namespace: forgejo
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forgejo-runner
+  namespace: forgejo
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: forgejo-runner
+  template:
+    metadata:
+      labels:
+        app: forgejo-runner
+    spec:
+      initContainers:
+        - name: register
+          image: code.forgejo.org/forgejo/runner:v13.2.0
+          command: ["sh", "-c"]
+          args:
+            - |
+              if [ -f /data/.runner ]; then
+                echo "runner already registered"
+                exit 0
+              fi
+              forgejo-runner register --no-interactive \
+                --instance http://forgejo-http.forgejo.svc.cluster.local:3000 \
+                --token "$RUNNER_TOKEN" \
+                --name k3s \
+                --labels docker
+          env:
+            - name: RUNNER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo-runner-token
+                  key: token
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      containers:
+        - name: runner
+          image: code.forgejo.org/forgejo/runner:v13.2.0
+          command: ["forgejo-runner", "daemon", "--config", "/etc/runner/config.yml"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /etc/runner
+              readOnly: true
+        - name: dind
+          image: docker:27-dind
+          securityContext:
+            privileged: true
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          volumeMounts:
+            - name: docker
+              mountPath: /var/lib/docker
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: forgejo-runner-data
+        - name: docker
+          persistentVolumeClaim:
+            claimName: forgejo-runner-docker
+        - name: config
+          configMap:
+            name: forgejo-runner-config

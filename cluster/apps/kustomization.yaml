@@ -8,3 +8,4 @@ resources:
   - alloy.yaml
   - monitoring-secrets.yaml
   - forgejo.yaml
+  - forgejo-runner.yaml

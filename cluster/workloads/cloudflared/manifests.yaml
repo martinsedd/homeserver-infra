@@ -13,6 +13,8 @@ data:
     tunnel: 4e5d2081-08ee-442f-9fa8-694f7c36d84f
     credentials-file: /etc/cloudflared/creds/credentials.json
     ingress:
+      - hostname: git-ssh.lampilabs.com
+        service: ssh://forgejo-ssh.forgejo.svc.cluster.local:2222
       - hostname: "*.lampilabs.com"
         service: http://traefik.kube-system.svc.cluster.local:80
       - service: http_status:404

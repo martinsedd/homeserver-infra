@@ -35,7 +35,7 @@ in
 
   networking.firewall.trustedInterfaces = [ "cni0" "flannel.1" ];
   networking.firewall.allowedUDPPorts = [ 8472 ];
-  networking.firewall.allowedTCPPorts = [ 6443 ];
+  networking.firewall.allowedTCPPorts = [ 6443 32222 ];
 
   systemd.services.k3s = {
     description = "k3s server";

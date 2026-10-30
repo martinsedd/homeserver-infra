@@ -91,6 +91,12 @@ spec:
         - name: runner
           image: code.forgejo.org/forgejo/runner:13.2.0
           command: ["forgejo-runner", "daemon", "--config", "/etc/runner/config.yml"]
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          env:
+            - name: DOCKER_HOST
+              value: unix:///var/run/docker.sock
           volumeMounts:
             - name: data
               mountPath: /data

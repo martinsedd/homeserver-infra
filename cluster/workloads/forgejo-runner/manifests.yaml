@@ -19,7 +19,7 @@ data:
     container:
       network: host
       privileged: false
-      docker_host: tcp://localhost:2375
+      docker_host: automount
       force_pull: false
 ---
 apiVersion: v1
@@ -97,6 +97,8 @@ spec:
             - name: config
               mountPath: /etc/runner
               readOnly: true
+            - name: dockersock
+              mountPath: /var/run
         - name: dind
           image: docker:27-dind
           securityContext:
@@ -107,6 +109,8 @@ spec:
           volumeMounts:
             - name: docker
               mountPath: /var/lib/docker
+            - name: dockersock
+              mountPath: /var/run
       volumes:
         - name: data
           persistentVolumeClaim:
@@ -114,6 +118,8 @@ spec:
         - name: docker
           persistentVolumeClaim:
             claimName: forgejo-runner-docker
+        - name: dockersock
+          emptyDir: {}
         - name: config
           configMap:
             name: forgejo-runner-config

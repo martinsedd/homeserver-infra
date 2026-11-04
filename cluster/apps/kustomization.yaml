@@ -9,3 +9,5 @@ resources:
   - monitoring-secrets.yaml
   - forgejo.yaml
   - forgejo-runner.yaml
+  - zulip-secrets.yaml
+  - zulip.yaml

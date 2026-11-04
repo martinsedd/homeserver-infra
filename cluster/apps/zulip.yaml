@@ -1,0 +1,87 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zulip
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: homeserver
+  source:
+    repoURL: ghcr.io/zulip/helm-charts
+    chart: zulip
+    targetRevision: 2.3.0
+    helm:
+      releaseName: zulip
+      values: |
+        image:
+          tag: "12.3-0"
+        service:
+          type: ClusterIP
+          port: 80
+        ingress:
+          enabled: true
+          className: traefik
+          hosts:
+            - host: zulip.lampilabs.com
+              paths:
+                - path: /
+          tls: []
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            memory: 2Gi
+        zulip:
+          environment:
+            SETTING_EXTERNAL_HOST: zulip.lampilabs.com
+            SETTING_ZULIP_ADMINISTRATOR: admin@lampilabs.com
+            SETTING_NOREPLY_EMAIL_ADDRESS: noreply@lampilabs.com
+            LOADBALANCER_IPS: 10.42.0.0/24
+            SETTING_EMAIL_HOST: email-smtp.ca-central-1.amazonaws.com
+            SETTING_EMAIL_PORT: "587"
+            SETTING_EMAIL_USE_TLS: "True"
+            SETTING_EMAIL_HOST_USER: inp-yenk4bhpqrrseomfhqlo546l
+            SECRETS_email_password:
+              valueFrom:
+                secretKeyRef:
+                  name: zulip-secrets
+                  key: email-password
+            SECRETS_secret_key:
+              valueFrom:
+                secretKeyRef:
+                  name: zulip-secrets
+                  key: secret-key
+            CONFIG_application_server__queue_workers_multiprocess: false
+            AUTO_BACKUP_INTERVAL: "30 2 * * *"
+          persistence:
+            size: 20Gi
+            storageClass: local-path
+        postgresql:
+          auth:
+            postgresPassword: "560c0e041ba2d045bb9009dfa2f4f9cbbd39879a213afa44"
+            password: "61798c7e4a235d26812bcc92c24e3262fc6ca46a1c3cb248"
+          primary:
+            persistence:
+              storageClass: local-path
+              size: 10Gi
+        rabbitmq:
+          auth:
+            password: "219fa927e81c6fe4cbbcf322cda56e0e6dbd5ee9b3d9e60e"
+            erlangCookie: "5eb3aa22212b73b1a1c94f1eaaa5d6bb137415501cf9f29a"
+        redis:
+          auth:
+            password: "1bf959fc12c60e3ffb636f440c5775f17ff9a456bf432423"
+        memcached:
+          auth:
+            password: "2acf13d4d370b1506c5322302a4cbb9b37311c0c9c7c4611"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: zulip
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

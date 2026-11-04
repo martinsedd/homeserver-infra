@@ -36,6 +36,7 @@ spec:
         zulip:
           environment:
             SETTING_EXTERNAL_HOST: zulip.lampilabs.com
+            SETTING_CSRF_TRUSTED_ORIGINS: '["https://zulip.lampilabs.com"]'
             SETTING_ZULIP_ADMINISTRATOR: admin@lampilabs.com
             SETTING_NOREPLY_EMAIL_ADDRESS: noreply@lampilabs.com
             LOADBALANCER_IPS: 10.42.0.0/24

@@ -42,7 +42,7 @@ spec:
             SETTING_EMAIL_HOST: email-smtp.ca-central-1.amazonaws.com
             SETTING_EMAIL_PORT: "587"
             SETTING_EMAIL_USE_TLS: "True"
-            SETTING_EMAIL_HOST_USER: inp-yenk4bhpqrrseomfhqlo546l
+            SETTING_EMAIL_HOST_USER: AKIAUWZ53C6PCXREQD3Y
             SECRETS_email_password:
               valueFrom:
                 secretKeyRef:

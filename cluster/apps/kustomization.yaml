@@ -11,3 +11,4 @@ resources:
   - forgejo-runner.yaml
   - zulip-secrets.yaml
   - zulip.yaml
+  - vaultwarden.yaml

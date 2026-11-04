@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vaultwarden-backup
+  namespace: vaultwarden
+spec:
+  schedule: "15 1 * * *"
+  concurrencyPolicy: Forbid
+  backoffLimit: 1
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            runAsUser: 0
+          containers:
+            - name: backup
+              image: alpine:3.21
+              command:
+                - /bin/sh
+                - -ec
+                - |
+                  apk add --no-cache sqlite >/dev/null
+                  mkdir -p /data/backups
+                  sqlite3 /data/db.sqlite3 ".backup '/data/backups/vault-$(date +%F).sqlite3'"
+                  find /data/backups -name 'vault-*.sqlite3' -mtime +7 -delete
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 200m
+                  memory: 256Mi
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: vaultwarden-data

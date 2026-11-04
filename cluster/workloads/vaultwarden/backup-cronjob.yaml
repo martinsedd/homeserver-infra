@@ -6,11 +6,11 @@ metadata:
 spec:
   schedule: "15 1 * * *"
   concurrencyPolicy: Forbid
-  backoffLimit: 1
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
+      backoffLimit: 1
       ttlSecondsAfterFinished: 86400
       template:
         spec:

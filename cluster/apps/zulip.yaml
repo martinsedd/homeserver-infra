@@ -39,6 +39,7 @@ spec:
             SETTING_CSRF_TRUSTED_ORIGINS: '["https://chat.thegalilai.com"]'
             SETTING_ZULIP_ADMINISTRATOR: martinsedd@pm.me
             SETTING_NOREPLY_EMAIL_ADDRESS: noreply@thegalilai.com
+            SETTING_TOKENIZED_NOREPLY_EMAIL_ADDRESS: "noreply-{token}@thegalilai.com"
             LOADBALANCER_IPS: 10.42.0.0/24
             SETTING_EMAIL_HOST: smtp-relay.brevo.com
             SETTING_EMAIL_PORT: "587"

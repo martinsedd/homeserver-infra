@@ -17,6 +17,8 @@ data:
         service: ssh://forgejo-ssh.forgejo.svc.cluster.local:2222
       - hostname: "*.lampilabs.com"
         service: http://traefik.kube-system.svc.cluster.local:80
+      - hostname: "*.thegalilai.com"
+        service: http://traefik.kube-system.svc.cluster.local:80
       - service: http_status:404
 ---
 apiVersion: apps/v1

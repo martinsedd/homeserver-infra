@@ -23,7 +23,7 @@ spec:
           enabled: true
           className: traefik
           hosts:
-            - host: zulip.lampilabs.com
+            - host: chat.thegalilai.com
               paths:
                 - path: /
           tls: []
@@ -35,15 +35,15 @@ spec:
             memory: 2Gi
         zulip:
           environment:
-            SETTING_EXTERNAL_HOST: zulip.lampilabs.com
-            SETTING_CSRF_TRUSTED_ORIGINS: '["https://zulip.lampilabs.com"]'
-            SETTING_ZULIP_ADMINISTRATOR: admin@lampilabs.com
-            SETTING_NOREPLY_EMAIL_ADDRESS: noreply@lampilabs.com
+            SETTING_EXTERNAL_HOST: chat.thegalilai.com
+            SETTING_CSRF_TRUSTED_ORIGINS: '["https://chat.thegalilai.com"]'
+            SETTING_ZULIP_ADMINISTRATOR: martinsedd@pm.me
+            SETTING_NOREPLY_EMAIL_ADDRESS: noreply@thegalilai.com
             LOADBALANCER_IPS: 10.42.0.0/24
-            SETTING_EMAIL_HOST: email-smtp.ca-central-1.amazonaws.com
+            SETTING_EMAIL_HOST: smtp-relay.brevo.com
             SETTING_EMAIL_PORT: "587"
             SETTING_EMAIL_USE_TLS: "True"
-            SETTING_EMAIL_HOST_USER: AKIAUWZ53C6PCXREQD3Y
+            SETTING_EMAIL_HOST_USER: b0ba78001@smtp-brevo.com
             SECRETS_email_password:
               valueFrom:
                 secretKeyRef:

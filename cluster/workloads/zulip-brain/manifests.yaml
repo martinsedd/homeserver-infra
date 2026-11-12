@@ -67,7 +67,7 @@ spec:
               mountPath: /data
       containers:
         - name: jeeves
-          image: git.lampilabs.com/martinsedd/zulip-brain:9955d5efb824c5e3ab16d293ea48ab2d868b1065
+          image: git.lampilabs.com/martinsedd/zulip-brain:8ccea21af8d0d8782372daf8b837b49af72ff146
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

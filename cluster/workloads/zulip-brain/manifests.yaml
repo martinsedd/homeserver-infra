@@ -23,7 +23,7 @@ metadata:
 data:
   ZULIP_SITE: https://chat.thegalilai.com
   ZULIP_BOT_EMAIL: jeeves-bot@chat.thegalilai.com
-  ZULIP_STREAMS: "13"
+  ZULIP_STREAMS: "*"
   OLLAMA_URL: http://ollama.ollama.svc.cluster.local:11434
   EMBED_MODEL: mxbai-embed-large
   CHAT_MODEL: qwen2.5:7b-instruct-q4_K_M
@@ -67,7 +67,7 @@ spec:
               mountPath: /data
       containers:
         - name: jeeves
-          image: git.lampilabs.com/martinsedd/zulip-brain:aadd2d90b579901a41750f60014f4d8fdecf19ed
+          image: git.lampilabs.com/martinsedd/zulip-brain:751df728d086cd3f1911c0ac6f0da2a637fb55fc
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

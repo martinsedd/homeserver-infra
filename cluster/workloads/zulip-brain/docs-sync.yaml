@@ -34,7 +34,7 @@ spec:
                     git sparse-checkout reapply
                   else
                     git clone --depth 1 --branch develop --filter=blob:none --sparse \
-                      ssh://git@git-ssh.lampilabs.com:2222/martinsedd/galilai.git /data/docs-repo
+                      ssh://git@forgejo-ssh.forgejo.svc.cluster.local:2222/martinsedd/galilai.git /data/docs-repo
                     cd /data/docs-repo
                     git sparse-checkout set docs
                   fi

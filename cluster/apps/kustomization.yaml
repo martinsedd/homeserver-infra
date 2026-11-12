@@ -12,3 +12,4 @@ resources:
   - zulip-secrets.yaml
   - zulip.yaml
   - vaultwarden.yaml
+  - zulip-brain.yaml

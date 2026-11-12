@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - manifests.yaml
   - servicemonitor.yaml
+  - docs-sync.yaml
   - sealedsecrets.yaml

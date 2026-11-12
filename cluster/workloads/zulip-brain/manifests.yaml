@@ -31,6 +31,9 @@ data:
   DB_PATH: /data/brain.db
   LISTEN_ADDR: ":9090"
   LOG_LEVEL: info
+  DOCS_ROOT: /data/docs-repo/docs
+  DOCS_INTERVAL: 15m
+  DOCS_SITE: https://git.lampilabs.com/martinsedd/galilai/src/branch/develop
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -67,7 +70,7 @@ spec:
               mountPath: /data
       containers:
         - name: jeeves
-          image: git.lampilabs.com/martinsedd/zulip-brain:7bbb71f5baf76b4d4b899bc335ed148e94440b65
+          image: git.lampilabs.com/martinsedd/zulip-brain:0dc34b6769f39b5dfa9039ebc4b24e055e4a3576
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

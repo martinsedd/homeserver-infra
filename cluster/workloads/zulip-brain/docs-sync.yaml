@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: docs-sync
+  namespace: zulip-brain
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 3600
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: sync
+              image: alpine:3.21
+              command: ["/bin/sh", "-ec"]
+              args:
+                - |
+                  apk add --no-cache git openssh-client >/dev/null
+                  mkdir -p /tmp/.ssh /data/docs-repo
+                  cp /keys/id_ed25519 /tmp/.ssh/id_ed25519
+                  chmod 600 /tmp/.ssh/id_ed25519
+                  export HOME=/tmp
+                  export GIT_SSH_COMMAND="ssh -i /tmp/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
+                  if [ -d /data/docs-repo/.git ]; then
+                    cd /data/docs-repo
+                    git fetch --depth 1 origin develop
+                    git reset --hard FETCH_HEAD
+                    git sparse-checkout reapply
+                  else
+                    git clone --depth 1 --branch develop --filter=blob:none --sparse \
+                      ssh://git@git-ssh.lampilabs.com:2222/martinsedd/galilai.git /data/docs-repo
+                    cd /data/docs-repo
+                    git sparse-checkout set docs
+                  fi
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 300m
+                  memory: 256Mi
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+                - name: key
+                  mountPath: /keys
+                  readOnly: true
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: jeeves-data
+            - name: key
+              secret:
+                secretName: docs-deploy-key
+                defaultMode: 0400

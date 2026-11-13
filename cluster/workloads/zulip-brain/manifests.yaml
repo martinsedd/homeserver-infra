@@ -33,7 +33,7 @@ data:
   LOG_LEVEL: info
   DOCS_ROOT: /data/docs-repo/docs
   DOCS_INTERVAL: 15m
-  DOCS_SITE: https://git.lampilabs.com/martinsedd/galilai/src/branch/develop
+  DOCS_SITE: https://git.lampilabs.com/theGALILAI/galilai/src/branch/develop
 ---
 apiVersion: apps/v1
 kind: Deployment

@@ -28,17 +28,11 @@ spec:
                   chmod 600 /tmp/.ssh/id_ed25519
                   export HOME=/tmp
                   export GIT_SSH_COMMAND="ssh -i /tmp/.ssh/id_ed25519 -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=15 -o StrictHostKeyChecking=accept-new"
-                  if [ -d /data/docs-repo/.git ] && cd /data/docs-repo && \
-                     git remote set-url origin "$REPO" && git fetch --depth 1 origin develop; then
-                    git reset --hard FETCH_HEAD
-                    git sparse-checkout reapply
-                  else
-                    cd /
-                    rm -rf /data/docs-repo
-                    git clone --depth 1 --branch develop --filter=blob:none --sparse "$REPO" /data/docs-repo
-                    cd /data/docs-repo
-                    git sparse-checkout set docs
-                  fi
+                  rm -rf /data/docs-repo.new
+                  git clone --depth 1 --branch develop --filter=blob:none --sparse "$REPO" /data/docs-repo.new
+                  git -C /data/docs-repo.new sparse-checkout set docs
+                  rm -rf /data/docs-repo
+                  mv /data/docs-repo.new /data/docs-repo
               resources:
                 requests:
                   cpu: 50m

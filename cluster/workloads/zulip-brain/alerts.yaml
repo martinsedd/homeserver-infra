@@ -1,0 +1,80 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: jeeves
+  namespace: zulip-brain
+  labels:
+    app: jeeves
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: jeeves.availability
+      rules:
+        - alert: BrainDown
+          expr: up{job="jeeves"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: Jeeves is not being scraped
+            description: No healthy replica answered the Prometheus scrape for five minutes.
+
+        - alert: BrainPollStalled
+          expr: time() - brain_last_poll_timestamp_seconds > 600
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: Jeeves has not received an event in ten minutes
+            description: The event queue has not answered a long-poll since {{ $value | humanizeDuration }} ago. New messages are not being indexed or answered.
+
+    - name: jeeves.ingestion
+      rules:
+        - alert: BrainIngestStuck
+          expr: brain_jobs_pending > 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: Ingest jobs are not draining
+            description: '{{ $value }} topic job(s) have been pending for ten minutes.'
+
+        - alert: BrainPollFailing
+          expr: increase(brain_poll_failures_total[10m]) > 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: Jeeves is failing to poll Zulip
+            description: Poll failures were recorded in the last ten minutes; check the event queue registration and the API key.
+
+    - name: jeeves.documents
+      rules:
+        - alert: BrainDocsSyncFailing
+          expr: increase(brain_docs_sync_errors_total[1h]) > 2
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: Document sync is failing
+            description: The docs indexer has logged errors repeatedly in the last hour; the index is serving the last good copy.
+
+    - name: jeeves.answers
+      rules:
+        - alert: BrainAnswerSlow
+          expr: histogram_quantile(0.95, sum by (le) (rate(brain_query_duration_seconds_bucket[10m]))) > 10
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: Jeeves answers slower than ten seconds at p95
+            description: The generation budget is exceeded; check the Ollama host and VRAM pressure.
+
+        - alert: BrainCitationInvalid
+          expr: increase(brain_citation_invalid_total[1h]) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: A generated citation failed validation
+            description: An answer was rejected for citing something it was not given. Watch for a prompt or model regression.

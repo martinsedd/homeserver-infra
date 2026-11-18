@@ -38,6 +38,7 @@ spec:
             SETTING_EXTERNAL_HOST: chat.thegalilai.com
             SETTING_CSRF_TRUSTED_ORIGINS: '["https://chat.thegalilai.com"]'
             SETTING_ZULIP_ADMINISTRATOR: martinsedd@pm.me
+            SETTING_ZULIP_SERVICE_PUSH_NOTIFICATIONS: "True"
             SETTING_NOREPLY_EMAIL_ADDRESS: noreply@thegalilai.com
             SETTING_TOKENIZED_NOREPLY_EMAIL_ADDRESS: "noreply-{token}@thegalilai.com"
             LOADBALANCER_IPS: 10.42.0.0/24

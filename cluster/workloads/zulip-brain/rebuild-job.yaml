@@ -1,0 +1,57 @@
+# One-off rebuild of Jeeves' derived index. Not part of the kustomization: the
+# operator applies it by hand, with the deployment scaled to zero, because two
+# processes must never write the SQLite file.
+#
+# The image line is a marker, not a tag. Use the runbook in 07-operations:
+#   sed "s|image: IMAGE|image: $(kubectl -n zulip-brain get deploy jeeves \
+#     -o jsonpath='{.spec.template.spec.containers[0].image}')|" rebuild-job.yaml \
+#     | kubectl -n zulip-brain create -f -
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: jeeves-rebuild
+  namespace: zulip-brain
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsUser: 65532
+        runAsGroup: 65532
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: rebuild
+          image: IMAGE
+          command: ["/brain", "rebuild", "--yes"]
+          envFrom:
+            - configMapRef:
+                name: jeeves-config
+            - secretRef:
+                name: jeeves-secrets
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: jeeves-data
+        - name: tmp
+          emptyDir: {}
